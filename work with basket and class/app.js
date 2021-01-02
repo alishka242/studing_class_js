@@ -10,7 +10,7 @@ class CatalogItems {
         return `
         <div class='catalog-list'>    
             <h3>${this.title}</h3>
-            <p>${this.price}</p>
+            <p>${this.price}$</p>
             <img width='150' src='${this.image}'><br>
             <button name='add' data-id='${this.id}'>Купить</button>
         </div>`
@@ -63,7 +63,7 @@ class CatalogList {
             this.catalog.forEach((elem) => {
                 if (event.target.dataset.id === elem.productId) {
                     console.log(`${elem.productName} КУПЛЕНО!`);
-                    basketList.render(elem);
+                    return basketList.render(elem);
                 }
             });
             // let id = event.target.dataset.id; //from data-id
@@ -81,16 +81,16 @@ class BasketItems extends CatalogItems {
     getTemplate(amount) {
         return `
         <div class='basket-list'>    
-            <h3>${this.title}</h3>
-            <p>${this.price}</p>
-            <img width='150' src='${this.image}'><br>
-            <div class='basket-amount'>
-                <button>-</button>
-                <p>${this.amount}<p>
-                <button name='add' data-id='${this.id}'>+</button>
-                
-            </div>
-            
+            <img width='110' src='${this.image}'>
+            <div>
+                <h3>${this.title}</h3>
+                <p>${this.price}$</p>
+                <div class='basket-amount'>
+                    <button>-</button>
+                    <p>${this.amount}<p>
+                    <button name='add' data-id='${this.id}'>+</button>
+                </div>
+            </div>        
         </div>`
 
     }
