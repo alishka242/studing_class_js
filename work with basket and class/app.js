@@ -22,25 +22,12 @@ class CatalogList {
     container = document.querySelector('#catalog');
 
     fetchCatalog() {
-        this.catalog = [{
-                productName: "MANGO PEOPLE T-SHIRT",
-                productPrice: 52,
-                productImg: "https://raw.githubusercontent.com/alishka242/static/master/IMG/fetured_1.jpg",
-                productId: "prod_0"
-            },
-            {
-                productPrice: 53,
-                productImg: "https://raw.githubusercontent.com/alishka242/static/master/IMG/fetured_2.jpg",
-                productName: "BANANA PEOPLE T-SHIRT",
-                productId: "prod_1"
-            },
-            {
-                productName: "STRAWBERRY PEOPLE T-SHIRT",
-                productPrice: 55,
-                productImg: "https://raw.githubusercontent.com/alishka242/static/master/IMG/fetured_3.jpg",
-                productId: "prod_2"
-            }
-        ];
+        return fetch("https://raw.githubusercontent.com/alishka242/static/master/JSON/catalog.json") 
+        .then(r => r.json())
+        .then(r => {
+            this.catalog = r;
+        })
+        .then(json => console.log(json))
     }
 
     render(selector) {
@@ -71,7 +58,7 @@ class BasketItems extends CatalogItems {
         return `
         <div class='basket-list'>    
             <img width='110' src='${this.image}'>
-            <div>
+            <div  class='item-info'>
                 <h3>${this.title}</h3>
                 <p>${this.price}$</p>
                 <div class='basket-amount'>
@@ -124,8 +111,7 @@ class BasketList {
 const basketList = new BasketList;
 
 const list = new CatalogList;
-list.fetchCatalog();
-list.render('#catalog');
+list.fetchCatalog().then(r => list.render('#catalog'));
 document.addEventListener('click', (event) => {
     list._handelEvents(event);
 });

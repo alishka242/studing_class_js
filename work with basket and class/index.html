@@ -6,10 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        body{
+            background-color: light-grey;
+        }
         .page{
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+        }
+        #catalog{
+            width: 1200px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+        #basket{
+            width: 410px;
+            overflow: auto;
+            height: 560px;
         }
         .basket-list{
             width: 400px;
@@ -23,6 +37,9 @@
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
+        }
+        .item-info{
+            margin-left: 10px;
         }
         h3{
             width: 290px;
