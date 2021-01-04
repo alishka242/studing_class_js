@@ -49,26 +49,15 @@ class CatalogList {
         document.querySelector(`${selector}`).innerHTML = templates;
     }
 
-    getSum() {
-        let summ = 0;
-        this.catalog
-            .map((i) => {
-                return summ += +i.productPrice
-            });
-        document.querySelector('#summ').innerHTML = `<p>${summ}</p>`;
-    }
-
     _handelEvents(event) {
+
         if (event.target.name == 'add') {
             this.catalog.forEach((elem) => {
                 if (event.target.dataset.id === elem.productId) {
                     console.log(`${elem.productName} КУПЛЕНО!`);
-                    return basketList.render(elem);
+                    basketList.render(elem);
                 }
             });
-            // let id = event.target.dataset.id; //from data-id
-            // let item = this.items.find(el => el.productId == id);
-            // this.basket.add(item);
         }
     }
 }
@@ -78,7 +67,7 @@ class BasketItems extends CatalogItems {
         super(title, price, image, id);
         this.amount = amount;
     }
-    getTemplate(amount) {
+    getTemplate() {
         return `
         <div class='basket-list'>    
             <img width='110' src='${this.image}'>
@@ -92,51 +81,43 @@ class BasketItems extends CatalogItems {
                 </div>
             </div>        
         </div>`
-
     }
 }
 
 class BasketList {
     constructor() {
         this.orderList = [];
-        this.container = null;
+        this.container = '';
+        this.sum = 0;
     }
 
-    // container = document.querySelector('#basket');
     render(elem) {
+        let isResult = true;
         console.log('Visited render in BastetList');
-        if (!this.orderList.length) {
-            /*  **Создает первый эл-т в корзине**   */
 
-            const basketItem = new BasketItems(elem.productName, elem.productPrice, elem.productImg, elem.productId, elem.amount = 1).getTemplate(1);
-            this.container = basketItem;
-            // document.querySelector(`#basket`).innerHTML = this.container;
-            // this.orderList.push(elem);
-        } else {
-            //Еще не может менять кол-во товара в корзине и при добавлении 3-его эл-та добавляет повторно последний эл-т
+        this.orderList.some(basketObj => {
+            if (elem.productId === basketObj.id) {
+                /*  **Меняет кол-во товара** */
 
-            this.orderList.forEach(basketObj => {
-                console.log(basketObj);
-                if (elem.productId === basketObj.productId) {
-                    /*  **Меняет кол-во товара** */
+                basketObj.amount += 1;
+                this.container = '';
+                isResult = false;
+            }
+        });
 
-                    //this.basketItem.getTemplate(basketObj.amount++);
-                    basketObj.amount += 1;
-                    this.container
+        if (isResult) {
+            const basketItem = new BasketItems(elem.productName, elem.productPrice, elem.productImg, elem.productId, elem.amount = 1);
+            this.orderList.push(basketItem);
+            this.container = '';
+            isResult = true;
+        }
 
-                    // return this.container;
-                } else {
-                    /*  **Добавляет новый эл-т в корзину** */
-
-                    const basketItem = new BasketItems(elem.productName, elem.productPrice, elem.productImg, elem.productId, elem.amount = 1).getTemplate(1);
-                    this.container += basketItem;
-                    // document.querySelector(`#basket`).innerHTML = this.container;
-                    // this.orderList.push(elem);
-                }
-            });
-        };
-        document.querySelector(`#basket`).innerHTML = this.container;
-        this.orderList.push(elem);
+        this.orderList.forEach(obj => {
+            this.container += obj.getTemplate();
+            this.sum += obj.amount * obj.price;
+        });
+        
+        document.querySelector(`#basket`).innerHTML = this.container + 'Сумма заказа: ' + this.sum;
     }
 }
 
@@ -145,7 +126,6 @@ const basketList = new BasketList;
 const list = new CatalogList;
 list.fetchCatalog();
 list.render('#catalog');
-list.getSum();
 document.addEventListener('click', (event) => {
     list._handelEvents(event);
 });
