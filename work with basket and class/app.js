@@ -42,6 +42,7 @@ class CatalogList {
             }
         ];
     }
+
     render(selector) {
         const templates = this.catalog
             .map((i) => new CatalogItems(i.productName, i.productPrice, i.productImg, i.productId).getTemplate())
@@ -50,11 +51,9 @@ class CatalogList {
     }
 
     _handelEvents(event) {
-
         if (event.target.name == 'add') {
             this.catalog.forEach((elem) => {
                 if (event.target.dataset.id === elem.productId) {
-                    console.log(`${elem.productName} КУПЛЕНО!`);
                     basketList.render(elem);
                 }
             });
@@ -67,6 +66,7 @@ class BasketItems extends CatalogItems {
         super(title, price, image, id);
         this.amount = amount;
     }
+
     getTemplate() {
         return `
         <div class='basket-list'>    
@@ -116,8 +116,8 @@ class BasketList {
             this.container += obj.getTemplate();
             this.sum += obj.amount * obj.price;
         });
-        
-        document.querySelector(`#basket`).innerHTML = this.container + 'Сумма заказа: ' + this.sum;
+
+        document.querySelector(`#basket`).innerHTML = 'Basket' + this.container + 'Total price: ' + this.sum + "$";
     }
 }
 
