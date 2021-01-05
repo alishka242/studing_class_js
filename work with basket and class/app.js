@@ -22,12 +22,11 @@ class CatalogList {
     container = document.querySelector('#catalog');
 
     fetchCatalog() {
-        return fetch("https://raw.githubusercontent.com/alishka242/static/master/JSON/catalog.json") 
-        .then(r => r.json())
-        .then(r => {
-            this.catalog = r;
-        })
-        .then(json => console.log(json))
+        return fetch("https://raw.githubusercontent.com/alishka242/static/master/JSON/catalog.json")
+            .then(r => r.json())
+            .then(r => {
+                this.catalog = r;
+            });
     }
 
     render(selector) {
@@ -37,11 +36,11 @@ class CatalogList {
         document.querySelector(`${selector}`).innerHTML = templates;
     }
 
-    _handelEvents(event) {
-        if (event.target.name == 'add') {
+    _handelEvents(eventTargetName, eventId) {
+        if (eventTargetName === 'add' || eventTargetName === 'plus' || eventTargetName === 'minus') {
             this.catalog.forEach((elem) => {
-                if (event.target.dataset.id === elem.productId) {
-                    basketList.render(elem);
+                if (eventId === elem.productId) {
+                    basketList.renderItem(elem, eventTargetName);
                 }
             });
         }
@@ -62,9 +61,9 @@ class BasketItems extends CatalogItems {
                 <h3>${this.title}</h3>
                 <p>${this.price}$</p>
                 <div class='basket-amount'>
-                    <button>-</button>
+                    <button name ='minus' data-minusid ='${this.id}'>-</button>
                     <p>${this.amount}<p>
-                    <button name='add' data-id='${this.id}'>+</button>
+                    <button name='plus' data-id ='${this.id}'>+</button>
                 </div>
             </div>        
         </div>`
@@ -78,15 +77,22 @@ class BasketList {
         this.sum = 0;
     }
 
-    render(elem) {
+    renderItem(elem, eventTargetName) {
         let isResult = true;
-        console.log('Visited render in BastetList');
 
-        this.orderList.some(basketObj => {
+        this.orderList.some((basketObj, index) => {
             if (elem.productId === basketObj.id) {
                 /*  **Меняет кол-во товара** */
 
-                basketObj.amount += 1;
+                if (eventTargetName === 'add' || eventTargetName === 'plus') {
+                    basketObj.amount += 1;
+                } else {
+                    if (basketObj.amount > 1) {
+                        basketObj.amount -= 1;
+                    } else {
+                        this.orderList.splice(index, 1);
+                    }
+                }
                 this.container = '';
                 isResult = false;
             }
@@ -98,13 +104,17 @@ class BasketList {
             this.container = '';
             isResult = true;
         }
-
+        this.sum = 0;
         this.orderList.forEach(obj => {
             this.container += obj.getTemplate();
             this.sum += obj.amount * obj.price;
         });
-
-        document.querySelector(`#basket`).innerHTML = 'Basket' + this.container + 'Total price: ' + this.sum + "$";
+        if (!this.orderList.length) {
+            this.container = '';
+            document.querySelector(`#basket`).innerHTML = '';
+        } else {
+            document.querySelector(`#basket`).innerHTML = 'Basket' + this.container + 'Total price: ' + this.sum + "$";
+        }
     }
 }
 
@@ -112,6 +122,14 @@ const basketList = new BasketList;
 
 const list = new CatalogList;
 list.fetchCatalog().then(r => list.render('#catalog'));
+
 document.addEventListener('click', (event) => {
-    list._handelEvents(event);
+    let btnTargetName = event.target.name;
+    let btnDatasetId = '';
+    if (btnTargetName === 'add' || btnTargetName === 'plus') {
+        btnDatasetId = event.target.dataset.id;
+    } else if (btnTargetName === 'minus') {
+        btnDatasetId = event.target.dataset.minusid;
+    }
+    list._handelEvents(btnTargetName, btnDatasetId);
 });

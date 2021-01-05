@@ -6,44 +6,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        body{
+        body {
             margin: 0 auto;
             background-color: light-grey;
         }
-        .page{
+
+        .page {
             margin: 0 20px;
             display: flex;
             flex-direction: row;
-            justify-content: space-between;
+            justify-content: space-around;
         }
-        #catalog{
-            width: 1200px;
+
+        #catalog {
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
         }
-        #basket{
-            width: 430px;
+
+        #basket {
+            width: 100%;
             overflow: auto;
             height: 560px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
         }
-        .basket-list{
-            width: 400px;
+
+        .basket-list {
             display: flex;
             flex-direction: row;
             justify-content: start;
             align-items: center;
         }
-        .basket-amount{
+
+        .basket-amount {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
         }
-        .item-info{
+
+        .item-info {
             margin-left: 10px;
         }
-        h3{
+
+        h3 {
             width: 290px;
         }
     </style>
